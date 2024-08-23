@@ -6,6 +6,16 @@ public class PlayerController : MonoBehaviour
 {
     Rigidbody2D rb;
     float torqueValue = 15.5f;
+
+    [SerializeField] ParticleSystem trail;
+    //play particle effect behind player
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Ground"))
+        {
+            trail.Play();
+        }
+    }
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();   
