@@ -10,8 +10,11 @@ public class PlayerScoreTracker : MonoBehaviour
     private float rotation = 0f;
     private float startingRot;
     private bool grounded;
+    private bool playedCheer;
 
     [SerializeField] TextMeshProUGUI scoreText;
+    [SerializeField] AudioClip cheer;
+    [SerializeField] AudioSource audioSource;
 
     //player lands, calculate score and reset vars
     private void OnCollisionEnter2D(Collision2D other)
@@ -19,6 +22,7 @@ public class PlayerScoreTracker : MonoBehaviour
         if (other.gameObject.CompareTag("Ground"))
         {
             grounded = true;
+            playedCheer = false;
             //prevent score from being calculated unless actually doing trick
             if (airTime > 0.3f)
             {
@@ -58,6 +62,7 @@ public class PlayerScoreTracker : MonoBehaviour
             score += System.Math.Abs(fullRots) * 1000;
             score += (int)(System.Math.Abs(partialRots) * 2);
         }
+
     }
 
     //reset the trick variables
@@ -67,6 +72,7 @@ public class PlayerScoreTracker : MonoBehaviour
         rotation = 0f;
     }
 
+    //returns score
     public int GetScore()
     {
         return score;
@@ -74,16 +80,22 @@ public class PlayerScoreTracker : MonoBehaviour
 
     void Update()
     {
+        //if player is in the air, add score for airtime
         if (!grounded)
         {
-            //air time
             airTime += Time.deltaTime;
             score += (int)(100 * Time.deltaTime);
 
-            //rotation amount
             float currentRot = transform.eulerAngles.z;
             rotation += Mathf.DeltaAngle(startingRot, currentRot);
             startingRot = currentRot;
+
+            //play cheer if trick is performed
+            if (System.Math.Abs(rotation) >= 360 && !playedCheer)
+            {
+                audioSource.PlayOneShot(cheer);
+                playedCheer = true;
+            }
 
         }
 

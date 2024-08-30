@@ -11,6 +11,8 @@ public class Finish : MonoBehaviour
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] PlayerScoreTracker playerScoreTracker;
 
+    public HighScoreManager highScoreManager;
+
     //when player finishes
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -22,11 +24,12 @@ public class Finish : MonoBehaviour
         }
     }
 
-    ////player finishes bring game over screen
+    //player finishes bring game over screen
     public void FinishGame()
     {
         Time.timeScale = 0;
         scoreText.text = (playerScoreTracker.GetScore()).ToString();
+        highScoreManager.SaveScore(playerScoreTracker.GetScore());
         panel.SetActive(true);
     }
 

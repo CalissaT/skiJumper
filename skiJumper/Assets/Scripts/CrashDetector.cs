@@ -12,12 +12,16 @@ public class CrashDetector : MonoBehaviour
     [SerializeField] AudioClip gasp;
     [SerializeField] AudioSource audioSource;
 
-    //when player hits something
+    //when player hits something bring game over
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Ground")
         {
             crash.Play();
+            if (audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
             audioSource.PlayOneShot(gasp);
             Invoke("GameOver", 0.15f);
         }
